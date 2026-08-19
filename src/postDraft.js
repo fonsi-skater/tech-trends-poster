@@ -10,7 +10,7 @@
 // Runs on a schedule via GitHub Actions — no server, no device of yours
 // needs to be on, and no paid API is used anywhere in this pipeline.
 
-const MAX_CHARS = 260; // leaves headroom under X's 280-char free-tier limit
+const MAX_CHARS = 190; // leaves headroom under X's 280-char free-tier limit
 const GROQ_MODEL = "openai/gpt-oss-120b"; // free tier on Groq as of writing
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
@@ -150,11 +150,9 @@ async function main() {
     const overLimit = charCount > MAX_CHARS;
 
     const message =
-      `*New X draft* (${charCount} chars${overLimit ? " ⚠️ OVER LIMIT" : ""})\n` +
-      `_Topic: ${topic}_\n\n` +
+      `*New X draft* (${charCount} chars${overLimit ? " ⚠️ OVER LIMIT" : ""})\n\n` +
       `${paragraph}\n\n` +
       `— Copy the paragraph above and post it to X.`;
-
     await sendToTelegram(message);
     console.log(`Draft sent to Telegram. Topic: ${topic}. Chars: ${charCount}`);
   } catch (err) {
