@@ -11,7 +11,7 @@
 // needs to be on, and no paid API is used anywhere in this pipeline.
 
 const MAX_CHARS = 260; // leaves headroom under X's 280-char free-tier limit
-const GROQ_MODEL = "llama-3.3-70b-versatile"; // free tier on Groq as of writing
+const GROQ_MODEL = "openai/gpt-oss-120b"; // free tier on Groq as of writing
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
