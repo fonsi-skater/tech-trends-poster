@@ -1,0 +1,13 @@
+{
+  "name": "tech-trends-poster",
+  "version": "1.0.0",
+  "description": "100% free automation: pulls trending tech stories from Hacker News, writes a one-paragraph explainer via Groq's free LLM API, and sends it to Telegram for manual review/posting to X.",
+  "type": "module",
+  "main": "src/postDraft.js",
+  "scripts": {
+    "start": "node src/postDraft.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
