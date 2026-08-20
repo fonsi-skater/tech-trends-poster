@@ -5,15 +5,23 @@
 //    needed): Hacker News, r/technology, and r/programming.
 // 2. Ask Groq (free-tier LLM API, no credit card required) to pick whichever
 //    topic shows the strongest cross-platform buzz (ideally appearing on
-//    more than one source) and write ONE paragraph explaining it, sized to
-//    fit X's free-tier character limit.
+//    more than one source), AVOIDING topics posted recently, and write ONE
+//    paragraph explaining it, sized to fit X's free-tier character limit.
 // 3. Send the draft to Telegram (your phone) for manual review + posting.
+// 4. Record the chosen topic in data/recent-topics.json so future runs
+//    know to avoid repeating it — this file gets committed back to the
+//    repo by the GitHub Actions workflow after each run.
 //
 // Runs on a schedule via GitHub Actions — no server, no device of yours
 // needs to be on, and no paid API is used anywhere in this pipeline.
 
+import { readFile, writeFile } from "fs/promises";
+
 const MAX_CHARS = 180; // tighter limit per user preference
 const GROQ_MODEL = "openai/gpt-oss-120b"; // free tier on Groq as of writing
+const RECENT_TOPICS_FILE = "data/recent-topics.json";
+const RECENT_TOPICS_TO_KEEP = 12; // ~4 days of history at 3 posts/day
+const RECENT_TOPICS_TO_SHOW_MODEL = 12;
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -94,8 +102,25 @@ async function getTrendingStories() {
   return combined;
 }
 
+// ---- Topic history (avoids repeating the same story across runs) ----
+async function loadRecentTopics() {
+  try {
+    const raw = await readFile(RECENT_TOPICS_FILE, "utf-8");
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    // File missing or unreadable on first-ever run — start with empty history.
+    return [];
+  }
+}
+
+async function saveRecentTopics(topics) {
+  const trimmed = topics.slice(-RECENT_TOPICS_TO_KEEP);
+  await writeFile(RECENT_TOPICS_FILE, JSON.stringify(trimmed, null, 2) + "\n", "utf-8");
+}
+
 // ---- Step 2: ask Groq (free tier) to pick one + write the paragraph ----
-async function generateDraft(stories) {
+async function generateDraft(stories, recentTopics) {
   if (!GROQ_API_KEY) {
     throw new Error("Missing GROQ_API_KEY environment variable");
   }
@@ -104,21 +129,35 @@ async function generateDraft(stories) {
     .map((s, i) => `${i + 1}. [${s.source}] ${s.title} (${s.url})`)
     .join("\n");
 
+  const recentList = recentTopics.length
+    ? recentTopics
+        .slice(-RECENT_TOPICS_TO_SHOW_MODEL)
+        .map((t) => `- ${t.topic}`)
+        .join("\n")
+    : "(none yet)";
+
   const systemPrompt = `You are a tech trends writer for an X (Twitter) account.
 You will be given a list of currently trending tech stories pulled from
 several different platforms (Hacker News, r/technology, r/programming) —
 each line is tagged with its source in brackets.
+
+Topics already posted recently — DO NOT pick any of these again, even if
+they're still trending. Pick something genuinely different:
+${recentList}
 
 Your job:
 - Look across the whole list for a topic that shows up on MORE THAN ONE
   platform, or that multiple differently-worded titles seem to be about —
   that cross-platform repetition is a strong signal of genuine, broad
   trending interest, and should be preferred over a topic that only
-  appears once.
+  appears once. But skip anything matching the "already posted" list above,
+  even if it's the top cross-platform story right now — pick the next best
+  genuinely new topic instead.
 - If nothing clearly repeats across platforms, fall back to picking the
   single most genuinely interesting, tech-related story (AI, programming
   languages, software engineering, cybersecurity, gadgets, startups, big
-  tech, open source, etc.), weighing score/engagement too.
+  tech, open source, etc.), weighing score/engagement too — still avoiding
+  the already-posted list.
 - Write EXACTLY ONE paragraph (no headers, no bullet points, no hashtags, no
   emojis) explaining it: what happened and why it matters, in plain,
   accessible language for a general tech-interested audience.
@@ -201,7 +240,8 @@ async function main() {
       throw new Error("No trending stories found on Hacker News right now.");
     }
 
-    const { paragraph, topic } = await generateDraft(stories);
+    const recentTopics = await loadRecentTopics();
+    const { paragraph, topic } = await generateDraft(stories, recentTopics);
 
     if (!paragraph) {
       throw new Error("Groq returned an empty draft — aborting send.");
@@ -216,6 +256,10 @@ async function main() {
       `— Copy the paragraph above and post it to X.`;
 
     await sendToTelegram(message);
+
+    const updatedTopics = [...recentTopics, { topic, date: new Date().toISOString() }];
+    await saveRecentTopics(updatedTopics);
+
     console.log(`Draft sent to Telegram. Topic: ${topic}. Chars: ${charCount}`);
   } catch (err) {
     console.error("Failed to generate/send draft:", err);
