@@ -1,9 +1,5 @@
 [
   {
-    "topic": "Malicious Rust crate Arrayref runs a build-time payload",
-    "date": "2026-08-20T19:23:35.577Z"
-  },
-  {
     "topic": "AI companies destroy physical books – let's scan rare books before it's too late",
     "date": "2026-08-21T03:47:37.945Z"
   },
@@ -46,5 +42,9 @@
   {
     "topic": "FDA clears blood test to aid evaluation for Alzheimer's disease",
     "date": "2026-08-24T11:24:51.793Z"
+  },
+  {
+    "topic": "Hot Chips 2026: CUDA Targets RISC‑V",
+    "date": "2026-08-24T19:21:50.206Z"
   }
 ]
