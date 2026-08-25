@@ -1,9 +1,5 @@
 [
   {
-    "topic": "AI companies destroy physical books – let's scan rare books before it's too late",
-    "date": "2026-08-21T03:47:37.945Z"
-  },
-  {
     "topic": "Micron announces $10B research hub in Boise",
     "date": "2026-08-21T11:23:02.657Z"
   },
@@ -46,5 +42,9 @@
   {
     "topic": "Hot Chips 2026: CUDA Targets RISC‑V",
     "date": "2026-08-24T19:21:50.206Z"
+  },
+  {
+    "topic": "Xiaomi: New CPU matches Apple cores single threaded, much faster multithreaded",
+    "date": "2026-08-25T03:45:21.603Z"
   }
 ]
