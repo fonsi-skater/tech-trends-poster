@@ -1,9 +1,5 @@
 [
   {
-    "topic": "AI boosted homework scores, then exam scores dropped: study",
-    "date": "2026-08-21T19:18:55.510Z"
-  },
-  {
     "topic": "Rust Glancer: Rust LSP using 100x less RAM",
     "date": "2026-08-22T03:38:53.790Z"
   },
@@ -46,5 +42,9 @@
   {
     "topic": "Quantum battery upends the rules of charging",
     "date": "2026-08-25T11:24:24.685Z"
+  },
+  {
+    "topic": "Apple introduces M6 and M5 Ultra",
+    "date": "2026-08-25T19:23:25.361Z"
   }
 ]
