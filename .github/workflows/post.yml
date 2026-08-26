@@ -1,14 +1,12 @@
-name: Tech Trends Draft Poster
+name: Tech Trends Draft Poster (legacy manual backup)
+
+# v2 runs as an always-on service (see PLAN.md / render.yaml) — scheduling
+# moved in-process. This workflow is kept for MANUAL emergency use only
+# (Actions tab -> Run workflow). Do not re-add `schedule:` triggers while
+# the Render service is live: two pipelines would fight over topic history.
 
 on:
-  schedule:
-    # Times are in UTC. Kenya is UTC+3, so subtract 3 hours from EAT to get UTC.
-    # These run at 06:00, 14:00, 22:00 EAT (Nairobi time) — spread across
-    # the 6am-10pm window.
-    - cron: "0 3 * * *"   # 06:00 EAT
-    - cron: "0 11 * * *"  # 14:00 EAT
-    - cron: "0 19 * * *"  # 22:00 EAT
-  workflow_dispatch: {} # lets you trigger it manually from the Actions tab, for testing
+  workflow_dispatch: {} # manual trigger only
 
 jobs:
   generate-and-send:

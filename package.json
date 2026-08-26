@@ -1,13 +1,18 @@
 {
   "name": "tech-trends-poster",
-  "version": "1.0.0",
-  "description": "100% free automation: pulls trending tech stories from Hacker News, writes a one-paragraph explainer via Groq's free LLM API, and sends it to Telegram for manual review/posting to X.",
+  "version": "2.0.0",
+  "description": "Always-on Telegram bot: trending tech digests with Fonsi-Sniffer meme links, plus location lookup with drawn route maps. Free stack (Groq, memegen.link, Nominatim, OSRM, OSM tiles) on Render.",
   "type": "module",
-  "main": "src/postDraft.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/postDraft.js"
+    "start": "node src/server.js",
+    "legacy-post": "node src/postDraft.js"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.53",
+    "node-cron": "^3.0.3"
   }
 }
