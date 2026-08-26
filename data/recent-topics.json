@@ -1,9 +1,5 @@
 [
   {
-    "topic": "Rust Glancer: Rust LSP using 100x less RAM",
-    "date": "2026-08-22T03:38:53.790Z"
-  },
-  {
     "topic": "Kagi added a setting for removing paywalled links from search results",
     "date": "2026-08-22T11:18:17.715Z"
   },
@@ -46,5 +42,9 @@
   {
     "topic": "Apple introduces M6 and M5 Ultra",
     "date": "2026-08-25T19:23:25.361Z"
+  },
+  {
+    "topic": "OpenAI Jalapeño: Better than Nvidia Blackwell",
+    "date": "2026-08-26T03:51:34.901Z"
   }
 ]
